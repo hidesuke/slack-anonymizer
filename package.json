@@ -1,0 +1,14 @@
+{
+  "name": "slack-anonymizer",
+  "version": "1.0.0",
+  "description": "create anonymous public channel on slack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hidesuke",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/web-api": "^5.0.1"
+  }
+}
