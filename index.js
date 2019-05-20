@@ -2,6 +2,8 @@ const { WebClient } = require('@slack/web-api');
 
 const challenge = (payload, res) => res.status(200).json({ 'challenge': payload.challenge });
 
+const IGNORE_SUBTYPES = ['bot_message', 'channel_join', 'channel_leave', 'channel_topic', 'channel_purpose', 'file_share', 'pinned_item'];
+
 const anonymize = async (payload, res) => {
   if (payload.event.channel !== process.env.HOOK_CHANNEL) return res.status(200).send('OK');
   try {
@@ -28,7 +30,8 @@ const onRequest = async (req, res) => {
   const payload = req.body;
   if (payload.type === 'url_verification') return challenge(payload, res);
   if (payload.event.channel !== process.env.HOOK_CHANNEL) return res.status(200).send('OK');
-  if (payload.event.subtype && payload.event.subtype === 'bot_message') return res.status(200).send('OK');
+  if (payload.event.subtype && IGNORE_SUBTYPES.indexOf(payload.event.subtype) > -1) return res.status(200).send('OK');
+  console.log(JSON.stringify(payload));
   return await anonymize(payload, res);
 };
 
