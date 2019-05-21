@@ -22,6 +22,7 @@ const postMessage = async (payload) => {
     username: 'anonymous',
   };
   if (payload.event.thread_ts) options.thread_ts = payload.event.thread_ts;
+  if (payload.event.subtype && payload.event.subtype === 'thread_broadcast') options.reply_broadcast = true;
   await client.chat.postMessage(options);
 };
 
@@ -41,6 +42,7 @@ const onRequest = async (req, res) => {
   if (payload.type === 'url_verification') return challenge(payload, res);
   if (payload.event.channel !== process.env.HOOK_CHANNEL) return res.status(200).send('OK');
   if (payload.event.subtype && IGNORE_SUBTYPES.indexOf(payload.event.subtype) > -1) return res.status(200).send('OK');
+  if (payload.event.bot_id) return res.status(200).send('OK');
   console.log(JSON.stringify(payload));
   return await anonymize(payload, res);
 };
